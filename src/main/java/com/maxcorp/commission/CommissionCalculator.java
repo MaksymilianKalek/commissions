@@ -1,8 +1,8 @@
 package com.maxcorp.commission;
 
-import com.maxcorp.commission.data.persist.Transaction;
-import com.maxcorp.commission.data.persist.TransactionService;
-import com.maxcorp.commission.data.rest.CommissionRequest;
+import com.maxcorp.commission.data.Transaction;
+import com.maxcorp.commission.data.TransactionService;
+import com.maxcorp.commission.rest.entities.CommissionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +23,23 @@ public class CommissionCalculator {
 
     public String calculateCommission(CommissionRequest commissionRequest) {
         var date = commissionRequest.getDate();
+        var localDate = LocalDate.parse(date);
         var amount = Double.parseDouble(commissionRequest.getAmount());
+        var currency = commissionRequest.getCurrency();
         if (!commissionRequest.getCurrency().equals(EUR)) {
-            amount = ExchangeService.convertToEUR(commissionRequest.getCurrency(), date, commissionRequest.getAmount());
+            try {
+                amount = ExchangeService.convertToEUR(currency, date, commissionRequest.getAmount());
+            } catch (CommissionException e) {
+                System.err.println(e.getDescription() + ": " + currency);
+                return null;
+            }
         }
 
         var clientId = commissionRequest.getClientId();
-
-        var clientsMonthlyTransactions = transactionService.getMonthlyTransactions(clientId, LocalDate.parse(commissionRequest.getDate()));
+        var clientsMonthlyTransactions = transactionService.getMonthlyTransactions(clientId, localDate);
         var sumOfClientsMonthlyTransactions = clientsMonthlyTransactions.stream().mapToDouble(Transaction::getAmount).sum();
 
-        var newTransaction = Transaction.builder().amount(amount).clientId(clientId).date(LocalDate.parse(date)).build();
+        var newTransaction = Transaction.builder().amount(amount).clientId(clientId).date(localDate).build();
         transactionService.saveTransaction(newTransaction);
 
         var commissions = getCommissions(amount, sumOfClientsMonthlyTransactions, clientId);

@@ -1,8 +1,8 @@
-package com.maxcorp.commission.controller;
+package com.maxcorp.commission.rest.controller;
 
 import com.maxcorp.commission.CommissionCalculator;
-import com.maxcorp.commission.data.rest.CommissionRequest;
-import com.maxcorp.commission.data.rest.CommissionResponse;
+import com.maxcorp.commission.rest.entities.CommissionRequest;
+import com.maxcorp.commission.rest.entities.CommissionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

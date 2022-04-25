@@ -1,4 +1,4 @@
-package com.maxcorp.commission.data.persist;
+package com.maxcorp.commission.data;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

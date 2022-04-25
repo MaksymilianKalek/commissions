@@ -1,4 +1,4 @@
-package com.maxcorp.commission.data.persist;
+package com.maxcorp.commission.data;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

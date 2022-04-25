@@ -1,5 +1,6 @@
-package com.maxcorp.commission.data.rest;
+package com.maxcorp.commission.rest.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ public class CommissionRequest {
     private String amount;
     private String currency;
     private String date;
-    private long clientId;
+    @JsonProperty("client_id")
+    private int clientId;
 
 }

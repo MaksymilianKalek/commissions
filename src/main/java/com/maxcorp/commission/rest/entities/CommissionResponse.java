@@ -1,4 +1,4 @@
-package com.maxcorp.commission.data.rest;
+package com.maxcorp.commission.rest.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
