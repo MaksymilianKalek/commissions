@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.format.DateTimeParseException;
+
 @RestController
 public class CommissionController {
 
@@ -39,6 +41,8 @@ public class CommissionController {
             }
         } catch (NullPointerException nullPointerException) {
             logger.error("All properties need to be filled");
+        } catch (DateTimeParseException dateTimeParseException) {
+            logger.error("Error during date parsing: {}", commissionRequest.getDate());
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
