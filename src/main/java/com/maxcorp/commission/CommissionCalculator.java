@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +32,12 @@ public class CommissionCalculator {
         var clientsMonthlyTransactions = transactionService.getMonthlyTransactions(clientId, localDate);
         var sumOfClientsMonthlyTransactions = clientsMonthlyTransactions.stream().mapToDouble(Transaction::getAmount).sum();
 
-        var newTransaction = Transaction.builder().amount(amount).clientId(clientId).date(localDate).build();
+        var commission = String.format(Locale.ENGLISH, "%.2f", getLowestCommission(amount, sumOfClientsMonthlyTransactions, clientId));
+
+        var newTransaction = Transaction.builder().amount(amount).clientId(clientId).date(localDate).commission(commission).build();
         transactionService.saveTransaction(newTransaction);
 
-        return String.format(Locale.ENGLISH, "%.2f", getLowestCommission(amount, sumOfClientsMonthlyTransactions, clientId));
+        return commission;
     }
 
     private double getAmount(CommissionRequest commissionRequest) {

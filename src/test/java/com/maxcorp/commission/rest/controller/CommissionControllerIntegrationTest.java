@@ -40,15 +40,15 @@ class CommissionControllerIntegrationTest {
         );
 
         // when
-        var commissionResponses = commissionRequests.stream().map(cr -> commissionController.getCalculatedCommission(cr)).toList();
+        var commissionResponseEntities = commissionRequests.stream().map(cr -> commissionController.getCalculatedCommission(cr)).toList();
 
         // then
-        assertEquals(2, commissionResponses.size());
-        assertEquals("0.05", commissionResponses.get(0).getAmount());
-        assertEquals("EUR", commissionResponses.get(0).getCurrency());
+        assertEquals(2, commissionResponseEntities.size());
+        assertEquals("0.05", commissionResponseEntities.get(0).getBody().getAmount());
+        assertEquals("EUR", commissionResponseEntities.get(0).getBody().getCurrency());
 
-        assertEquals("2.50", commissionResponses.get(1).getAmount());
-        assertEquals("EUR", commissionResponses.get(1).getCurrency());
+        assertEquals("2.50", commissionResponseEntities.get(1).getBody().getAmount());
+        assertEquals("EUR", commissionResponseEntities.get(1).getBody().getCurrency());
     }
 
 }

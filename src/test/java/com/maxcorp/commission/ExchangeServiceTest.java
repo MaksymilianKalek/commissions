@@ -9,7 +9,7 @@ class ExchangeServiceTest {
     @Test
     void shouldConvertToEUR() {
         // given
-        var currency = "CHF";
+        var currency = "PLN";
         var date = "2022-03-02";
         var amount = "500.0";
 
@@ -17,6 +17,6 @@ class ExchangeServiceTest {
         var convertedAmount = ExchangeService.convertToEUR(currency, date, amount);
 
         // then
-        assertEquals(512.034663, convertedAmount);
+        assertEquals(105.366389, convertedAmount);
     }
 }

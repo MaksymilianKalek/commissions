@@ -24,5 +24,6 @@ public class Transaction {
     private long clientId;
     private double amount;
     private LocalDate date;
+    private String commission;
 
 }
