@@ -14,7 +14,7 @@ public class ExchangeService {
         var response = (new RestTemplate()).getForEntity(exchangeRateConvertUrl, String.class);
         var jsonResponse = new JSONObject(response.getBody());
         var convertedAmount = jsonResponse.get("result").toString();
-        if (convertedAmount.equals("null")) {
+        if (convertedAmount.equals("null") || Double.parseDouble(amount) == Double.parseDouble(convertedAmount)) {
             throw new IllegalArgumentException();
         }
         return Double.parseDouble(convertedAmount);

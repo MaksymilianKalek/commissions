@@ -27,9 +27,8 @@ public class CommissionController {
 
     @PostMapping(value = "/calculate-commission")
     public ResponseEntity<CommissionResponse> getCalculatedCommission(@RequestBody CommissionRequest commissionRequest) {
-        String commission;
         try {
-            commission = commissionCalculator.calculateCommission(commissionRequest);
+            var commission = commissionCalculator.calculateCommission(commissionRequest);
             return ResponseEntity.ok(new CommissionResponse(commission, "EUR"));
         } catch (IllegalArgumentException illegalArgumentException) {
             try {
@@ -38,8 +37,10 @@ public class CommissionController {
             } catch (JsonProcessingException jsonProcessingException) {
                 logger.error("Invalid request JSON");
             }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (NullPointerException nullPointerException) {
+            logger.error("All properties need to be filled");
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
 }

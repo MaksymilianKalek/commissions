@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 public class CommissionCalculator {
@@ -25,6 +27,15 @@ public class CommissionCalculator {
     }
 
     public String calculateCommission(CommissionRequest commissionRequest) {
+
+        if (Stream.of(commissionRequest.getAmount(),
+                        commissionRequest.getCurrency(),
+                        commissionRequest.getDate(),
+                        commissionRequest.getClientId())
+                .anyMatch(Objects::isNull) || commissionRequest.getClientId() < 1) {
+            throw new NullPointerException();
+        }
+
         var localDate = LocalDate.parse(commissionRequest.getDate());
         var amount = getAmount(commissionRequest);
 
