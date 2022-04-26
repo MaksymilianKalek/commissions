@@ -2,7 +2,7 @@
 
 This is a simple commission calculator
 
-You've got one POST endpoint available that you can use to calculate commission in EUR
+You've got one POST endpoint at localhost PORT 8081 available that you can use to calculate commission in EUR
 
 ```
 /calculate-commission
