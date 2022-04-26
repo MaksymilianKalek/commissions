@@ -3,7 +3,6 @@ package com.maxcorp.commission.rest.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maxcorp.commission.CommissionCalculator;
-import com.maxcorp.commission.ExchangeService;
 import com.maxcorp.commission.rest.entities.CommissionRequest;
 import com.maxcorp.commission.rest.entities.CommissionResponse;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommissionController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExchangeService.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommissionController.class);
     private final CommissionCalculator commissionCalculator;
 
     @Autowired
