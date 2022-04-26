@@ -6,9 +6,13 @@ import com.maxcorp.commission.rest.entities.CommissionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class CommissionCalculator {
@@ -22,18 +26,8 @@ public class CommissionCalculator {
     }
 
     public String calculateCommission(CommissionRequest commissionRequest) {
-        var date = commissionRequest.getDate();
-        var localDate = LocalDate.parse(date);
-        var amount = Double.parseDouble(commissionRequest.getAmount());
-        var currency = commissionRequest.getCurrency();
-        if (!commissionRequest.getCurrency().equals(EUR)) {
-            try {
-                amount = ExchangeService.convertToEUR(currency, date, commissionRequest.getAmount());
-            } catch (CommissionException e) {
-                System.err.println(e.getDescription() + ": " + currency);
-                return null;
-            }
-        }
+        var localDate = LocalDate.parse(commissionRequest.getDate());
+        var amount = getAmount(commissionRequest);
 
         var clientId = commissionRequest.getClientId();
         var clientsMonthlyTransactions = transactionService.getMonthlyTransactions(clientId, localDate);
@@ -42,20 +36,29 @@ public class CommissionCalculator {
         var newTransaction = Transaction.builder().amount(amount).clientId(clientId).date(localDate).build();
         transactionService.saveTransaction(newTransaction);
 
-        var commissions = getCommissions(amount, sumOfClientsMonthlyTransactions, clientId);
-        return String.valueOf(commissions.stream().mapToDouble(Double::doubleValue).min());
+        return String.format(Locale.ENGLISH, "%.2f", getLowestCommission(amount, sumOfClientsMonthlyTransactions, clientId));
     }
 
-    private List<Double> getCommissions(double amount, double sumOfClientsMonthlyTransactions, long clientId) {
+    private double getAmount(CommissionRequest commissionRequest) {
+        var currency = commissionRequest.getCurrency();
+        if (currency.equals(EUR)) {
+            return Double.parseDouble(commissionRequest.getAmount());
+        } else {
+            return ExchangeService.convertToEUR(currency, commissionRequest.getDate(), commissionRequest.getAmount());
+        }
+    }
+
+    private double getLowestCommission(double amount, double sumOfClientsMonthlyTransactions, long clientId) {
         List<Double> commissions = new ArrayList<>();
-        commissions.add(amount * 0.005);
+        commissions.add(Math.max(amount * 0.005, 0.05));
         if (clientId == 42) {
             commissions.add(0.05);
         }
         if (sumOfClientsMonthlyTransactions >= 1000) {
             commissions.add(0.03);
         }
-        return commissions;
+        var lowestCommission = commissions.stream().mapToDouble(Double::doubleValue).min().getAsDouble();
+        return BigDecimal.valueOf(lowestCommission).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
 }

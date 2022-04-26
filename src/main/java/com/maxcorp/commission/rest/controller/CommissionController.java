@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommissionController {
 
+    private final CommissionCalculator commissionCalculator;
+
     @Autowired
-    CommissionCalculator commissionCalculator;
+    public CommissionController(CommissionCalculator commissionCalculator) {
+        this.commissionCalculator = commissionCalculator;
+    }
 
     @PostMapping(value = "/calculate-commission")
     public CommissionResponse getCalculatedCommission(@RequestBody CommissionRequest commissionRequest) {
